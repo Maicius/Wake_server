@@ -43,11 +43,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>WebRoot/WEB-INF/lib/servlet-api.jar</name>
-			<type>1</type>
-			<location>C:/Program Files/Java/jre1.8.0_91/lib/ext/servlet-api.jar</location>
-		</link>
-	</linkedResources>
 </projectDescription>
