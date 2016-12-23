@@ -169,6 +169,20 @@ public Boolean getFriendsList(String username) {
 	sql.closeDB();
 	return false;
 }
+
+public Boolean deleteFriend(String userName, String friendName) {
+	String query = "delete from friend_list where user_id='" + userName + "' and friends='" + friendName+ "'";
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	int ret = sql.executeUpdate(query);
+	if (ret != 0) {
+		sql.closeDB();
+		return true;
+	}
+	sql.closeDB();
+	return false;
+}
 	
 public Boolean setUserInfo(String username, String nickname, String brief_intro) {
 	
