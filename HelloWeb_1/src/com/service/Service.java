@@ -10,6 +10,7 @@ public class Service {
 	public String timeList="";
     public String userinfo="";
     public String friendsList="";
+    public String sleepList="";
 	public Boolean login(String username, String password) {
 
 		// 获取Sql查询语句
@@ -256,6 +257,30 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 		}
 		sql.closeDB();
 
+		return false;
+	}
+
+	public boolean getSleepTime(String username) {
+        timeList="";       
+		// 获取Sql查询语句
+		String SqlQuery = "select sleep from sleepTime where username ='" + username+"'";
+		
+		// 获取DB对象
+		DBManager sql = DBManager.createInstance();
+		sql.connectDB();
+		// 操作DB对象
+		try {
+			ResultSet rs = sql.executeQuery(SqlQuery);
+			while (rs.next()) {
+				String tmp=rs.getString("sleep")+"#" ;
+				sleepList+=tmp;
+			}
+			sql.closeDB();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		sql.closeDB();
 		return false;
 	}
 }
