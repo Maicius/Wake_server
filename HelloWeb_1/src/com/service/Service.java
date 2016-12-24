@@ -65,14 +65,9 @@ public class Service {
 	}
 	
 	public Boolean registerTime(String username, java.sql.Timestamp date){
-		int id;
-		do{
-			id =1+(int)(Math.random()*100000);
-		}
-		while(checkID(id));
              
 		// 获取Sql查询语句
-		String regTimeSql = "insert into getuptime (time_id, username, up_time) values('"+id+"','"
+		String regTimeSql = "insert into getuptime (username, up_time) values('"
 				+ username + "','" + date + "') ";
 		System.out.println(regTimeSql);
 		// 获取DB对象
@@ -163,7 +158,7 @@ public Boolean getFriendsList(String username) {
 		sql.closeDB();
 		return true;
 	} catch (SQLException e) {
-		// TODO �Զ����ɵ� catch ��
+		// TODO �Զ����ɵ� catch ��
 		e.printStackTrace();
 	}
 	sql.closeDB();
@@ -242,6 +237,25 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 			e.printStackTrace();
 		}
 		sql.closeDB();
+		return false;
+	}
+
+	public boolean registerSleepTime(String username, String date) {
+		// TODO Auto-generated method stub
+		String regTimeSql = "insert into sleepTime (username, sleep) values('"
+				+ username + "','" + date + "') ";
+		System.out.println(regTimeSql);
+		// 获取DB对象
+		DBManager sql = DBManager.createInstance();
+		sql.connectDB();
+		
+		int ret = sql.executeUpdate(regTimeSql);
+		if (ret != 0) {
+			sql.closeDB();
+			return true;
+		}
+		sql.closeDB();
+
 		return false;
 	}
 }
