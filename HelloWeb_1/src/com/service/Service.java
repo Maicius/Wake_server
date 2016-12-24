@@ -9,6 +9,7 @@ public class Service {
 	
 	public String timeList="";
     public String userinfo="";
+    public String friendsList="";
 	public Boolean login(String username, String password) {
 
 		// 鑾峰彇Sql鏌ヨ璇彞
@@ -141,7 +142,47 @@ public Boolean getUserInfo(String username) {
 		}
 		sql.closeDB();
 		return false;
+}
+
+public Boolean getFriendsList(String username) {
+	friendsList = "";
+	String query = "select username, nickname, brief_intro from appuser where username in (select friends from friend_list"
+			+ " where user_id = '" + username + "');";
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	
+	ResultSet rs = sql.executeQuery(query);
+	try {
+		while (rs.next()) {
+			String userName = rs.getString("username");
+			String nickName = rs.getString("nickname");
+			String signature = rs.getString("brief_intro");
+			friendsList += userName + "#" + nickName + "#" + signature + "#";
+		}
+		sql.closeDB();
+		return true;
+	} catch (SQLException e) {
+		// TODO 自动生成的 catch 块
+		e.printStackTrace();
 	}
+	sql.closeDB();
+	return false;
+}
+
+public Boolean deleteFriend(String userName, String friendName) {
+	String query = "delete from friend_list where user_id='" + userName + "' and friends='" + friendName+ "'";
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	int ret = sql.executeUpdate(query);
+	if (ret != 0) {
+		sql.closeDB();
+		return true;
+	}
+	sql.closeDB();
+	return false;
+}
 	
 public Boolean setUserInfo(String username, String nickname, String brief_intro) {
 	
