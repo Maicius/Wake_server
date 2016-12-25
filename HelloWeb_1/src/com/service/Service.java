@@ -298,6 +298,21 @@ public Boolean addFriend(String userName, String friendName) {
 	}
 	return false;
 }
+
+public Boolean setGetUpTip(String username,String friendname, String tip) {
+	String query = "insert into greeting(send_user, receive_user, greeting_text) values('"+username+"',"
+			+ " '"+friendname+"', '"+tip+"');";
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	int ret = sql.executeUpdate(query);
+	if (ret != 0) {
+		sql.closeDB();
+		return true;
+	}
+	sql.closeDB();
+	return false;
+}
 	
 public Boolean setUserInfo(String username, String nickname, String brief_intro) {
 	
