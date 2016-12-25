@@ -179,6 +179,121 @@ public Boolean deleteFriend(String userName, String friendName) {
 	sql.closeDB();
 	return false;
 }
+
+public Boolean searchFriend(String nickName, String userName) {
+	String query = "";
+	if (nickName.equals("") && userName.equals(""))//ͬʱΪ��
+		return false;
+	else if (nickName.equals("")) {                //�ǳ�Ϊ�գ����ǵ绰��Ϊ��
+		query = "select username, nickname from appuser where username = '" + userName + "';";
+	} else if (userName.equals("")) {              //ֻ���ǳ�
+		query = "select username, nickname from appuser where nickname = '" + nickName + "';";
+	} else {                                       //�ǳơ��û�������
+		query = "select username, nickname from appuser where username = '"+ userName +"'"
+				+ " and nickname='" + nickName + "';";
+	}
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	
+	ResultSet rs = sql.executeQuery(query);
+	try {
+		while (rs.next()) {
+			String uName = rs.getString("username");
+			String nName = rs.getString("nickname");
+			friendsList += uName + "#" + nName + "#";
+		}
+		sql.closeDB();
+		return true;
+	} catch (SQLException e) {
+		// TODO �Զ����ɵ� catch ��
+		e.printStackTrace();
+	}
+	sql.closeDB();
+	return false;
+}
+
+public Boolean whetherUser(String name) {
+	String query = "select * from appuser where username = '"+name+"';";
+
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	
+	ResultSet rs = sql.executeQuery(query);
+	try {
+		if (rs.next()){
+			sql.closeDB();
+			return true;
+		} else {
+			sql.closeDB();
+			return false;
+		}
+		
+	} catch (SQLException e) {
+		// TODO �Զ����ɵ� catch ��
+		e.printStackTrace();
+	}
+	sql.closeDB();
+	return false;
+}
+
+public Boolean whetherFriends(String userName, String friendName) {
+	String query = "";
+	if (userName.equals("") || friendName.equals("")) {  //������Ϊ�յ����
+		return false;
+	} else {
+		query = "select * from friend_list where user_id='"+userName+"' and friends='"+friendName+"';";
+	}
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	
+	ResultSet rs = sql.executeQuery(query);
+	try {
+		if (rs.next()){
+			sql.closeDB();
+			return true;
+		} else {
+			sql.closeDB();
+			return false;
+		}
+		
+	} catch (SQLException e) {
+		// TODO �Զ����ɵ� catch ��
+		e.printStackTrace();
+	}
+	sql.closeDB();
+	return false;
+}
+
+public Boolean addFriend(String userName, String friendName) {
+	String query = "";
+	System.out.println(userName +" " + friendName);
+	if (userName.equals("") || friendName.equals("")) {  //������Ϊ�յ����
+		return false;
+	} else {
+		query = "insert into friend_list(user_id, friends) values('"+userName+"', '"+friendName+"');";
+		
+		DBManager sql = DBManager.createInstance();
+		sql.connectDB();
+		int ret = sql.executeUpdate(query);
+		System.out.println(ret);
+		if (ret == 0) {
+			sql.closeDB();
+			return false;
+		}
+		
+		query = "insert into friend_list(user_id, friends) values('"+friendName+"', '"+userName+"');";
+		int ret2 = sql.executeUpdate(query);
+		System.out.println(ret2);
+		if (ret2 != 0) {
+			sql.closeDB();
+			return true;
+		}
+		sql.closeDB();
+	}
+	return false;
+}
 	
 public Boolean setUserInfo(String username, String nickname, String brief_intro) {
 	
