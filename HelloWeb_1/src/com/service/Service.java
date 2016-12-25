@@ -183,6 +183,39 @@ public Boolean deleteFriend(String userName, String friendName) {
 	sql.closeDB();
 	return false;
 }
+
+public Boolean searchFriend(String nickName, String userName) {
+	String query = "";
+	if (nickName.equals("") && userName.equals(""))//同时为空
+		return false;
+	else if (nickName.equals("")) {                //昵称为空，但是电话不为空
+		query = "select username, nickname from appuser where username = '" + userName + "';";
+	} else if (userName.equals("")) {              //只有昵称
+		query = "select username, nickname from appuser where nickname = '" + nickName + "';";
+	} else {                                       //昵称、用户名都有
+		query = "select username, nickname from appuser where username = '"+ userName +"'"
+				+ " and nickname='" + nickName + "';";
+	}
+	
+	DBManager sql = DBManager.createInstance();
+	sql.connectDB();
+	
+	ResultSet rs = sql.executeQuery(query);
+	try {
+		while (rs.next()) {
+			String uName = rs.getString("username");
+			String nName = rs.getString("nickname");
+			friendsList += uName + "#" + nName + "#";
+		}
+		sql.closeDB();
+		return true;
+	} catch (SQLException e) {
+		// TODO 自动生成的 catch 块
+		e.printStackTrace();
+	}
+	sql.closeDB();
+	return false;
+}
 	
 public Boolean setUserInfo(String username, String nickname, String brief_intro) {
 	
