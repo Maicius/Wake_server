@@ -41,7 +41,6 @@ public class RegLet extends HttpServlet {
             e.printStackTrace();
         }
 		System.out.println("昵称"+nickname);
-		nickname = new String(nickname.getBytes("ISO-8859-1"), "UTF-8");
 		System.out.println("UTF-8昵称"+nickname);
 		// 返回信息
 				response.setCharacterEncoding("UTF-8");
