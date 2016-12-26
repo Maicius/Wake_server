@@ -46,8 +46,7 @@ public class GetUserInfo extends HttpServlet {
 				boolean ok = serv.getUserInfo(username);
 				if (ok) {
 					System.out.print("Succss in getUserInfo");
-					request.getSession().setAttribute("username", username);
-					// response.sendRedirect("welcome.jsp");
+					//request.getSession().setAttribute("username", username);
 					info=serv.userinfo;
 					out.print(info);
 					

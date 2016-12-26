@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,6 +35,7 @@ public class SetGetUpTip extends HttpServlet {
 		String username = request.getParameter("username");
 		String friendname = request.getParameter("friendname");
 		String tip = request.getParameter("tip");
+		tip = URLDecoder.decode(tip,"UTF-8");
 	    Service service = new Service();
 	    
 	    response.setCharacterEncoding("UTF-8");
