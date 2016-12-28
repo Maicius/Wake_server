@@ -41,7 +41,7 @@ public class Service {
 		return false;
 	}
 
-	public Boolean register(String username, String password, String nickname) {
+	public Boolean register(String username, String password, String nickname, String brief_intro) {
 		
 		if (checkName(username)){
 			return false;
@@ -49,12 +49,10 @@ public class Service {
              
 		// 获取Sql查询语句
 		String regSql = "insert into appuser "
-				+ "(username,password,nickname) "
+				+ "(username,password,nickname,brief_intro) "
 				+ "values('"
-				+ username + "','" + password + "','"+ nickname+"') ";
+				+ username + "','" + password + "','"+ nickname+"','"+brief_intro+"') ";
 		System.out.println(regSql);
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();
 		
 		int ret = sql.executeUpdate(regSql);
@@ -72,7 +70,7 @@ public class Service {
 		// 获取Sql查询语句
 		String regTimeSql = "insert into getuptime (username, up_time) values('"
 				+ username + "','" + date + "') ";
-		System.out.println(regTimeSql);
+		//System.out.println(regTimeSql);
 		// 获取DB对象
 		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();

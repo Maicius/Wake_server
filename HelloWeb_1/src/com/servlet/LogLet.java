@@ -27,7 +27,6 @@ public class LogLet extends HttpServlet {
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 		String password = request.getParameter("password");
 		System.out.println(username + "--" + password);
-
 		// 新建服务对象
 		Service serv = new Service();
 

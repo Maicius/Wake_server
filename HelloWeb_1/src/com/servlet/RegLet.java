@@ -34,6 +34,7 @@ public class RegLet extends HttpServlet {
 		System.out.println("UTF-8:"+username);
 		String password = request.getParameter("password");
 		System.out.println(password);
+		String brief_intro = " ";
 		try{
 		String nicknameUTF8 = request.getParameter("nickname");
 		nickname = URLDecoder.decode(nicknameUTF8,"UTF-8");
@@ -48,7 +49,7 @@ public class RegLet extends HttpServlet {
 				PrintWriter out = response.getWriter();
 		
 		// 验证处理
-		boolean reged = serv.register(username,password,nickname);
+		boolean reged = serv.register(username,password,nickname, brief_intro);
 		if (reged) {
 			System.out.print("Succss in Register");
 			request.getSession().setAttribute("username", username);
