@@ -2,6 +2,8 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +35,13 @@ public class AddFriend extends HttpServlet {
 		// TODO Auto-generated method stub
 		String userName = request.getParameter("userName");
 		String friendName = request.getParameter("friendName");
-		//³õÊ¼»¯´¦ÀíÀà
+		try{
+			userName = URLDecoder.decode(userName, "UTF-8");
+		    friendName = URLDecoder.decode(friendName, "UTF-8");
+		}catch(UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+		//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	    Service service = new Service();
 	    
 	    response.setCharacterEncoding("UTF-8");
@@ -41,17 +49,17 @@ public class AddFriend extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		boolean ok3 = service.whetherUser(friendName);
-		if (!ok3) {            //Ê×ÏÈÅÐ¶ÏÌí¼ÓµÄºÃÓÑÊÇ·ñÊÇÒÑ×¢²áµÄÓÃ»§
+		if (!ok3) {            //ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ÓµÄºï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
 			System.out.println("The user not register.");
 			out.print("notuser");
-		} else {               //ÅÐ¶ÏÊÇ·ñÒÑ¾­ÊÇºÃÓÑ¹ØÏµ
+		} else {               //ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½ï¿½Çºï¿½ï¿½Ñ¹ï¿½Ïµ
 			boolean ok2 = service.whetherFriends(userName, friendName);
-			if (ok2) {             //ÒÑ¾­ÊÇºÃÓÑ
+			if (ok2) {             //ï¿½Ñ¾ï¿½ï¿½Çºï¿½ï¿½ï¿½
 				System.out.println("They are already friends.");
 				out.print("already");
-			} else {               //»¹²»ÊÇºÃÓÑ
+			} else {               //ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½ï¿½ï¿½
 				boolean ok = service.addFriend(userName, friendName);
-				if (ok)        //ÅÐ¶ÏÊÇ·ñÌí¼Ó³É¹¦
+				if (ok)        //ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ó³É¹ï¿½
 				{
 					System.out.println("Success in Add Friend.");
 					out.print("success");

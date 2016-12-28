@@ -2,6 +2,8 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,8 +35,14 @@ public class SearchFriend extends HttpServlet {
 		// TODO Auto-generated method stub
 		String nickName = request.getParameter("userName");
 		String userName = request.getParameter("friendName");
+		try{
+			nickName = URLDecoder.decode(nickName, "UTF-8");
+			userName = URLDecoder.decode(userName,"UTF-8");
+		}catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
 		String info = "";
-		//³õÊ¼»¯´¦ÀíÀà
+		//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	    Service service = new Service();
 	    
 	    response.setCharacterEncoding("UTF-8");
