@@ -371,13 +371,11 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 		return false;
 	}
 
-	public boolean registerSleepTime(String username, String date) {
+	public boolean registerSleepTime(String username, String hour, String date) {
 		// TODO Auto-generated method stub
-		String regTimeSql = "insert into sleepTime (username, sleep) values('"
-				+ username + "','" + date + "') ";
-		System.out.println(regTimeSql);
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
+		String regTimeSql = "insert into sleepTime (username, sleep, day) values('"
+				+ username + "','" + hour + "','"+date+"') ";
+		System.out.println("regTime:"+regTimeSql);
 		sql.connectDB();
 		
 		int ret = sql.executeUpdate(regTimeSql);
@@ -393,7 +391,7 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 	public boolean getSleepTime(String username) {
         timeList="";       
 		// 获取Sql查询语句
-		String SqlQuery = "select sleep from sleepTime where username ='" + username+"'";
+		String SqlQuery = "select sleep,day from sleepTime where username ='" + username+"'";
 		
 		// 获取DB对象
 		//DBManager sql = DBManager.createInstance();
@@ -402,7 +400,7 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 		try {
 			ResultSet rs = sql.executeQuery(SqlQuery);
 			while (rs.next()) {
-				String tmp=rs.getString("sleep")+"#" ;
+				String tmp=rs.getString("day")+" "+rs.getString("sleep")+"#" ;
 				sleepList+=tmp;
 			}
 			sql.closeDB();

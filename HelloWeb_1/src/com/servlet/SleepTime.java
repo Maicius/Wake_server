@@ -24,22 +24,21 @@ public class SleepTime extends HttpServlet{
 		// 接收信息
 		String username=request.getParameter("username");
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
-	    String date=request.getParameter("date");
+	    String hour=request.getParameter("hour");
+	    String date = request.getParameter("date");
 	    //long date=Long.parseLong(strDate);    
 	    Service serv = new Service();
 
 		// 验证处理
-		boolean ok = serv.registerSleepTime(username, date);
+		boolean ok = serv.registerSleepTime(username, hour, date);
 		if (ok) {
-			System.out.print("Succss in update SleepTime");
-			request.getSession().setAttribute("username", username);
-			// response.sendRedirect("welcome.jsp");
+			//System.out.print("Succss in update SleepTime");
 		} else {
-			System.out.print("Failed in update SleepTime");
+			//System.out.print("Failed in update SleepTime");
 		}
 	    
 		
-	    System.out.println("  User:"+username+"  SleepTime:"+date);
+	    //System.out.println("  User:"+username+"  SleepTime:"+date);
 	    
 		 // 返回信息
 		 response.setCharacterEncoding("UTF-8");

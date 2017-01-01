@@ -6,7 +6,7 @@ public class DBManager {
 	// 数据库连接常量
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	public static final String USER = "test";
-	public static final String PASS = "110110";
+	public static final String PASS = "";
 	public static final String URL = "jdbc:mysql://116.62.41.211:3306/clock";
 
 	// 静态成员，支持单态模式
