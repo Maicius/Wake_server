@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 @WebServlet("/GetSleepTime")
@@ -33,7 +34,7 @@ public class GetSleepTime extends HttpServlet{
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 		String result="";
 		System.out.println("***"+username);
-
+        AppUserInfo appUserInfo = new AppUserInfo();
 		// 新建服务对象
 		Service serv = new Service();
 
@@ -43,14 +44,12 @@ public class GetSleepTime extends HttpServlet{
 		 PrintWriter out = response.getWriter();
 		 
 		// 验证处理
-		boolean ok = serv.getSleepTime(username);
+		boolean ok = serv.getSleepTime(username, appUserInfo);
 		if (ok) {
-			result=serv.sleepList;
+			result=appUserInfo.getSleepList();
 			System.out.print("Succss in getSleepTimeHistory");
 			System.out.print(result);
-			request.getSession().setAttribute("username", username);
-			// response.sendRedirect("welcome.jsp");
-			 out.print(result);
+			out.print(appUserInfo.getSleepList());
 			 
 		} else {
 			 System.out.print("failed");

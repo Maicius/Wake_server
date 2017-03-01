@@ -9,19 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 /**
  * Servlet implementation class TimeHistory
  */
 @WebServlet("/TimeHistory")
-public class TimeHistory extends HttpServlet {
+public class GetUpTimeHistory extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public TimeHistory() {
+    public GetUpTimeHistory() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,19 +37,17 @@ public class TimeHistory extends HttpServlet {
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 		String result="";
 		System.out.println("***"+username);
-
+		AppUserInfo appUserInfo = new AppUserInfo();
 		// 新建服务对象
 		Service serv = new Service();
 
-		 // 返回信息
-		 response.setCharacterEncoding("UTF-8");
-		 response.setContentType("text/html");
-		 PrintWriter out = response.getWriter();
-		 
-		// 验证处理
-		boolean ok = serv.getTimeHistory(username);
+		// 返回信息
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		boolean ok = serv.getTimeHistory(username, appUserInfo);
 		if (ok) {
-			result=serv.timeList;
+			result=appUserInfo.getTimeList();
 			System.out.print("Succss in getTimeHistory");
 			System.out.print(result);
 			request.getSession().setAttribute("username", username);

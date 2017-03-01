@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 /**
@@ -31,22 +32,22 @@ public class GetFriendsList extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//»ñÈ¡ÇëÇóµÄ²ÎÊýÓÃ»§Ãû
+		//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
 		String username = request.getParameter("username");
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
-	    
+	    AppUserInfo appUserInfo = new AppUserInfo();
 		String info="";
-		//³õÊ¼»¯´¦ÀíÀà
+		//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	    Service service = new Service();
 	    
 	    response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		boolean ok = service.getFriendsList(username);
+		boolean ok = service.getFriendsList(username, appUserInfo);
 		if (ok) {
 			System.out.println("Success in Getting Friends List");
-			info = service.friendsList;
+			info = appUserInfo.getFriendsList();
 			//System.out.println(info);
 			out.print(info);
 		} else {

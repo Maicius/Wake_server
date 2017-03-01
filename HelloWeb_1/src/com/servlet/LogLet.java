@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 public class LogLet extends HttpServlet {
@@ -26,22 +27,20 @@ public class LogLet extends HttpServlet {
 		System.out.println("username="+username);
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 		String password = request.getParameter("password");
-		System.out.println(username + "--" + password);
+		//System.out.println(username + "--" + password);
 		// 新建服务对象
 		Service serv = new Service();
-
+        AppUserInfo appUserInfo = new AppUserInfo();
 		 // 返回信息
 		 response.setCharacterEncoding("UTF-8");
 		 response.setContentType("text/html");
 		 PrintWriter out = response.getWriter();
 		 
 		// 验证处理
-		boolean loged = serv.login(username, password);
+		boolean loged = serv.login(username, password, appUserInfo);
 		if (loged) {
-			System.out.print("Succss in Login");
-			request.getSession().setAttribute("username", username);
-			// response.sendRedirect("welcome.jsp");
-			 out.print(serv.userinfo);	
+			 System.out.print("Succss in Login");
+			 out.print(appUserInfo.getUserInfo());	
 		} else {
 			 out.print("failed");
 		}
@@ -58,9 +57,7 @@ public class LogLet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// 测试为何手机端中文乱码，电脑正常
-		// System.out.println("u1--"+username);
-		// System.out.println("u2--"+username);
+		doGet(request, response);
 
 	}
 

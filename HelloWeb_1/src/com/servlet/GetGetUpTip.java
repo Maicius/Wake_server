@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 @WebServlet("/GetGetUpTip")
@@ -31,10 +32,11 @@ public class GetGetUpTip extends HttpServlet{
 		 response.setCharacterEncoding("UTF-8");
 		 response.setContentType("text/html");
 		 PrintWriter out = response.getWriter();
-		boolean ok = serv.getGetUpTip(username);
+		 AppUserInfo appUserInfo = new AppUserInfo();
+		boolean ok = serv.getGetUpTip(username, appUserInfo);
 		if (ok) {
 			System.out.print("Succss in get wake tip");
-			out.print(serv.greetingInfo);
+			out.print(appUserInfo.getGreetingInfo());
 			//request.getSession().setAttribute("username", username);
 			// response.sendRedirect("welcome.jsp");
 		} else {

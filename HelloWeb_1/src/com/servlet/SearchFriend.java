@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 /**
@@ -48,11 +49,11 @@ public class SearchFriend extends HttpServlet {
 	    response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		
-		boolean ok = service.searchFriend(nickName, userName);
+		AppUserInfo appUserInfo = new AppUserInfo();
+		boolean ok = service.searchFriend(nickName, userName, appUserInfo);
 		if (ok) {
 			System.out.println("Success in Getting Friends List");
-			info = service.friendsList;
+			info = appUserInfo.getFriendsList();
 			//System.out.println(info);
 			if (info.equals("")) {
 				System.out.println("Search nothing!");

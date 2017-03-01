@@ -3,26 +3,15 @@ package com.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.UserDao.AppUserInfo;
 import com.db.DBManager;
 
 public class Service {
-	
-	public String timeList="";
-    public String userinfo="";
-    public String friendsList="";
-    public String sleepList="";
-    public String greetingInfo="";
     DBManager sql = DBManager.createInstance();
-	public Boolean login(String username, String password) {
-
-		// 获取Sql查询语句
-		userinfo="";
+	public Boolean login(String username, String password, AppUserInfo appUserInfo) {
 		String nickname="";
 		String logSql = "select * from appuser where username ='" + username
 				+ "' and password ='" + password + "'";
-
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();
 
 		// 操作DB对象
@@ -30,7 +19,7 @@ public class Service {
 			ResultSet rs= sql.executeQuery(logSql);
 			if (rs.next()) {
 				nickname = rs.getString("nickname");
-				userinfo="success"+"#"+nickname;
+				appUserInfo.setUserInfo("success"+"#"+nickname);
 				sql.closeDB();
 				return true;
 			}
@@ -46,8 +35,6 @@ public class Service {
 		if (checkName(username)){
 			return false;
 		}
-             
-		// 获取Sql查询语句
 		String regSql = "insert into appuser "
 				+ "(username,password,nickname,brief_intro) "
 				+ "values('"
@@ -66,13 +53,8 @@ public class Service {
 	}
 	
 	public Boolean registerTime(String username, java.sql.Timestamp date){
-             
-		// 获取Sql查询语句
 		String regTimeSql = "insert into getuptime (username, up_time) values('"
 				+ username + "','" + date + "') ";
-		//System.out.println(regTimeSql);
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();
 		
 		int ret = sql.executeUpdate(regTimeSql);
@@ -85,24 +67,18 @@ public class Service {
 		return false;
 	}
 	
-	public Boolean getTimeHistory(String username) {
+	public Boolean getTimeHistory(String username, AppUserInfo appUserInfo) {
 		
-        timeList="";
-       
-		// 获取Sql查询语句
+        String timeList="";
 		String SqlQuery = "select up_time from getuptime where username ='" + username+"'";
-
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();
-
-		// 操作DB对象
 		try {
 			ResultSet rs = sql.executeQuery(SqlQuery);
 			while (rs.next()) {
 				String tmp=rs.getString("up_time").substring(0, 19)+"#" ;
 				timeList+=tmp;
 			}
+			appUserInfo.setTimeList(timeList);
 			sql.closeDB();
 			return true;
 		} catch (SQLException e) {
@@ -112,24 +88,17 @@ public class Service {
 		return false;
 	}
 	
-public Boolean getUserInfo(String username) {
-		
-        userinfo="";
-		// 获取Sql查询语句
+public Boolean getUserInfo(String username, AppUserInfo appUserInfo) {
 		String SqlQuery = "select username, nickname, brief_intro from appuser where username ='" + username+"'";
-
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();
-
-		// 操作DB对象
 		try {
 			ResultSet rs = sql.executeQuery(SqlQuery);
 			if (rs.next()) {
 				String user_name=rs.getString("username");
 				String nickname=rs.getString("nickname");
 				String brief_intro=rs.getString("brief_intro");
-				userinfo=user_name+"#"+nickname+"#"+brief_intro;
+				appUserInfo.setUserinfo(user_name+"#"+nickname+"#"+brief_intro);
+				
 			}
 			sql.closeDB();
 			return true;
@@ -140,12 +109,10 @@ public Boolean getUserInfo(String username) {
 		return false;
 }
 
-public Boolean getFriendsList(String username) {
-	friendsList = "";
+public Boolean getFriendsList(String username, AppUserInfo appUserInfo) {
+	String friendsList = "";
 	String query = "select username, nickname, brief_intro from appuser where username in (select friends from friend_list"
 			+ " where user_id = '" + username + "');";
-	
-	//DBManager sql = DBManager.createInstance();
 	sql.connectDB();
 	
 	ResultSet rs = sql.executeQuery(query);
@@ -156,6 +123,7 @@ public Boolean getFriendsList(String username) {
 			String signature = rs.getString("brief_intro");
 			friendsList += userName + "#" + nickName + "#" + signature + "#";
 		}
+		appUserInfo.setFriendsList(friendsList);
 		sql.closeDB();
 		return true;
 	} catch (SQLException e) {
@@ -168,8 +136,6 @@ public Boolean getFriendsList(String username) {
 
 public Boolean deleteFriend(String userName, String friendName) {
 	String query = "delete from friend_list where user_id='" + userName + "' and friends='" + friendName+ "'";
-	
-	//DBManager sql = DBManager.createInstance();
 	sql.connectDB();
 	int ret = sql.executeUpdate(query);
 	if (ret != 0) {
@@ -180,8 +146,9 @@ public Boolean deleteFriend(String userName, String friendName) {
 	return false;
 }
 
-public Boolean searchFriend(String nickName, String userName) {
+public Boolean searchFriend(String nickName, String userName, AppUserInfo appUserInfo) {
 	String query = "";
+	String friendsList ="";
 	if (nickName.equals("") && userName.equals(""))//ͬʱΪ��
 		return false;
 	else if (nickName.equals("")) {                //�ǳ�Ϊ�գ����ǵ绰��Ϊ��
@@ -192,17 +159,17 @@ public Boolean searchFriend(String nickName, String userName) {
 		query = "select username, nickname from appuser where username = '"+ userName +"'"
 				+ " and nickname='" + nickName + "';";
 	}
-	
-	//DBManager sql = DBManager.createInstance();
 	sql.connectDB();
 	
 	ResultSet rs = sql.executeQuery(query);
 	try {
+		
 		while (rs.next()) {
 			String uName = rs.getString("username");
 			String nName = rs.getString("nickname");
 			friendsList += uName + "#" + nName + "#";
 		}
+		appUserInfo.setFriendsList(friendsList);
 		sql.closeDB();
 		return true;
 	} catch (SQLException e) {
@@ -215,8 +182,6 @@ public Boolean searchFriend(String nickName, String userName) {
 
 public Boolean whetherUser(String name) {
 	String query = "select * from appuser where username = '"+name+"';";
-
-	//DBManager sql = DBManager.createInstance();
 	sql.connectDB();
 	
 	ResultSet rs = sql.executeQuery(query);
@@ -388,14 +353,10 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 		return false;
 	}
 
-	public boolean getSleepTime(String username) {
-        timeList="";       
-		// 获取Sql查询语句
+	public boolean getSleepTime(String username, AppUserInfo appUserInfo) {      
 		String SqlQuery = "select sleep,day from sleepTime where username ='" + username+"'";
-		
-		// 获取DB对象
-		//DBManager sql = DBManager.createInstance();
 		sql.connectDB();
+		String sleepList="";
 		// 操作DB对象
 		try {
 			ResultSet rs = sql.executeQuery(SqlQuery);
@@ -403,6 +364,7 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 				String tmp=rs.getString("day")+" "+rs.getString("sleep")+"#" ;
 				sleepList+=tmp;
 			}
+			appUserInfo.setSleepList(sleepList);
 			sql.closeDB();
 			return true;
 		} catch (SQLException e) {
@@ -412,7 +374,7 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 		return false;
 	}
 
-	public boolean getGetUpTip(String username) {
+	public boolean getGetUpTip(String username, AppUserInfo appUserInfo) {
 		// TODO Auto-generated method stub
 		String SqlQuery = "select greeting_text, nickname from greeting,appuser where send_user = username and receive_user ='" + username+"'";
 		
@@ -423,7 +385,8 @@ public Boolean setUserInfo(String username, String nickname, String brief_intro)
 			if(rs.last()) {
 				String greeting=rs.getString("greeting_text");
 				String send_user = rs.getString("nickname");
-				greetingInfo = greeting+"#"+send_user;
+				String greetingInfo = greeting+"#"+send_user;
+				appUserInfo.setGreetingInfo(greetingInfo);
 				System.out.println(greetingInfo);
 			}
 			sql.closeDB();
