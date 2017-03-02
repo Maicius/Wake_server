@@ -54,7 +54,7 @@ public class AddFriend extends HttpServlet {
 		boolean ok3 = false;
 		try {
 			ok3 = CheckInformation.whetherUser(friendName);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

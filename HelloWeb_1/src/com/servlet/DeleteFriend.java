@@ -41,7 +41,7 @@ public class DeleteFriend extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		boolean ok;
+		boolean ok = false;
 		try {
 			ok = service.deleteFriend(userName, friendName);
 		} catch (SQLException e) {

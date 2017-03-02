@@ -89,6 +89,7 @@ public class Service {
 			ClockDBHelper.closeDB();
 			return true;
 		} catch (SQLException e) {
+			ClockDBHelper.closeDB();
 			e.printStackTrace();
 		}
 		ClockDBHelper.closeDB();
@@ -130,118 +131,92 @@ public class Service {
 		return false;
 	}
 
-public Boolean searchFriend(String nickName, String userName, AppUserInfo appUserInfo) {
-	String query = "";
-	String friendsList ="";
-	ResultSet rs = null;
-	Connection conn = ClockDBHelper.createInstance();
-	ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
-	if (nickName.equals("") && userName.equals(""))//ͬʱΪ��
-		return false;
-	else if (nickName.equals("")) {                //�ǳ�Ϊ�գ����ǵ绰��Ϊ��
-		rs = clockDataDBManager.executeSearchFriends(userName, userName);
-		//query = "select username, nickname from appuser where username = '" + userName + "';";
-	} else if (userName.equals("")) {              //ֻ���ǳ�
-		
-		query = "select username, nickname from appuser where nickname = '" + nickName + "';";
-	} else {                                       //�ǳơ��û�������
-		query = "select username, nickname from appuser where username = '"+ userName +"'"
-				+ " and nickname='" + nickName + "';";
-	}
-	sql.connectDB();
-	
-	ResultSet rs = sql.executeQuery(query);
-	try {
-		
-		while (rs.next()) {
-			String uName = rs.getString("username");
-			String nName = rs.getString("nickname");
-			friendsList += uName + "#" + nName + "#";
-		}
-		appUserInfo.setFriendsList(friendsList);
-		sql.closeDB();
-		return true;
-	} catch (SQLException e) {
-		// TODO �Զ����ɵ� catch ��
-		e.printStackTrace();
-	}
-	sql.closeDB();
-	return false;
-}
-
-
-
-
-
-public Boolean addFriend(String userName, String friendName) {
-	String query = "";
-	System.out.println(userName +" " + friendName);
-	if (userName.equals("") || friendName.equals("")) {  //������Ϊ�յ����
-		return false;
-	} else {
-		query = "insert into friend_list(user_id, friends) values('"+userName+"', '"+friendName+"');";
-		sql.connectDB();
-		int ret = sql.executeUpdate(query);
-		System.out.println(ret);
-		if (ret == 0) {
-			sql.closeDB();
+	public Boolean searchFriend(String nickName, String userName, AppUserInfo appUserInfo) throws SQLException {
+		String friendsList = "";
+		ResultSet rs = null;
+		Connection conn = ClockDBHelper.createInstance();
+		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+		if (nickName.equals("") && userName.equals(""))// ͬʱΪ��
 			return false;
+		else if (userName.equals("")) { // �ǳ�Ϊ�գ����ǵ绰��Ϊ��
+			rs = clockDataDBManager.executeSearchFriends("username", userName);
+		} else if (nickName.equals("")) { // ֻ���ǳ�
+			rs = clockDataDBManager.executeSearchFriends("nickname", nickName);
+		} else { // �ǳơ��û�������
+			rs = clockDataDBManager.executeSearchFriends("username", userName);
 		}
-		
-		query = "insert into friend_list(user_id, friends) values('"+friendName+"', '"+userName+"');";
-		int ret2 = sql.executeUpdate(query);
-		System.out.println(ret2);
-		if (ret2 != 0) {
-			sql.closeDB();
+		try {
+			while (rs.next()) {
+				String uName = rs.getString("username");
+				String nName = rs.getString("nickname");
+				friendsList += uName + "#" + nName + "#";
+			}
+			appUserInfo.setFriendsList(friendsList);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public Boolean addFriend(String userName, String friendName) throws SQLException {
+		String query = "";
+		System.out.println(userName + " " + friendName);
+		if (userName.equals("") || friendName.equals("")) { // ������Ϊ�յ����
+			return false;
+		} else {
+			// 为用户A添加好友B
+			Connection conn = ClockDBHelper.createInstance();
+			ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+			int ret = clockDataDBManager.executeAddFriend(userName, friendName);
+			System.out.println(ret);
+			if (ret == 0) {
+				ClockDBHelper.closeDB();
+				return false;
+			}
+			// 为用户B添加好友A，即双向添加
+			ret = clockDataDBManager.executeAddFriend(friendName, userName);
+			System.out.println(ret);
+			if (ret != 0) {
+				ClockDBHelper.closeDB();
+				return true;
+			}
+			ClockDBHelper.closeDB();
+		}
+		return false;
+	}
+
+	public Boolean setGetUpTip(String userName, String friendName, String tip) throws SQLException {
+		Connection conn  = ClockDBHelper.createInstance();
+		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+		int ret = clockDataDBManager.executeSetGetUpTip(userName, friendName, tip);
+		ClockDBHelper.closeDB();
+		if (ret != 0) {
 			return true;
 		}
-		sql.closeDB();
+		return false;
 	}
-	return false;
-}
-
-public Boolean setGetUpTip(String username,String friendname, String tip) {
-	String query = "insert into greeting(send_user, receive_user, greeting_text) values('"+username+"',"
-			+ " '"+friendname+"', '"+tip+"');";
 	
-	//DBManager sql = DBManager.createInstance();
-	sql.connectDB();
-	int ret = sql.executeUpdate(query);
-	if (ret != 0) {
-		sql.closeDB();
-		return true;
-	}
-	sql.closeDB();
-	return false;
-}
-	
-public Boolean setUserInfo(String username, String nickname, String brief_intro) {
-	
-			// 获取Sql查询语句
-			String SqlUpdate = "update appuser set nickname='"+nickname+"',brief_intro='"+brief_intro+"'where username ='"+username+"'";
-            System.out.println(SqlUpdate);
-			// 获取DB对象
-			//DBManager sql = DBManager.createInstance();
-			sql.connectDB();
+	public Boolean setUserInfo(String userName, String nickname, String brief_intro) throws SQLException {
 
-			// 操作DB对象
-
-			sql.executeUpdate(SqlUpdate);
-		
-			sql.closeDB();
+		// 获取Sql查询语句\
+		Connection conn = ClockDBHelper.createInstance();
+		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+		int ret = clockDataDBManager.executeSetUserInfo(userName, nickname, brief_intro);
+		ClockDBHelper.closeDB();
+		if(ret !=0)
 			return true;
-}
+		else
+			return false;
+	}
 
-
-
-	public boolean registerSleepTime(String username, String hour, String date) {
+	public boolean registSleepTime(String username, String hour, String date) {
 		// TODO Auto-generated method stub
 		String regTimeSql = "insert into sleepTime (username, sleep, day) values('"
 				+ username + "','" + hour + "','"+date+"') ";
-		System.out.println("regTime:"+regTimeSql);
-		sql.connectDB();
-		
-		int ret = sql.executeUpdate(regTimeSql);
+		Connection conn = ClockDBHelper.createInstance();
+		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+		int ret = clockDataDBManager.executeRegistSleepTime();
 		if (ret != 0) {
 			sql.closeDB();
 			return true;
