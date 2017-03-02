@@ -2,6 +2,8 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,12 @@ public class GetUpTime extends HttpServlet {
 	    Service serv = new Service();
 
 		// 验证处理
-		boolean ok = serv.registerTime(username, date);
+		boolean ok = false;
+		try {
+			ok = serv.registerTime(username, date);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if (ok) {
 			System.out.print("Succss in registerTime");
 			request.getSession().setAttribute("username", username);
@@ -43,8 +50,7 @@ public class GetUpTime extends HttpServlet {
 		} else {
 			System.out.print("Failed to registerTime");
 		}
-	    
-		
+	  
 	    System.out.println("  User:"+username+"  GetUpTime:"+date);
 	    
 		 // 返回信息

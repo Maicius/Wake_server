@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.UserDao.AppUserInfo;
+import com.checkInformation.CheckInformation;
 import com.service.Service;
 
 /**
@@ -49,12 +51,18 @@ public class AddFriend extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		boolean ok3 = service.whetherUser(friendName);
+		boolean ok3 = false;
+		try {
+			ok3 = CheckInformation.whetherUser(friendName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (!ok3) {            //�����ж���ӵĺ����Ƿ�����ע����û�
 			System.out.println("The user not register.");
 			out.print("notuser");
 		} else {               //�ж��Ƿ��Ѿ��Ǻ��ѹ�ϵ
-			boolean ok2 = service.whetherFriends(userName, friendName);
+			boolean ok2 = CheckInformation.whetherFriends(userName, friendName);
 			if (ok2) {             //�Ѿ��Ǻ���
 				System.out.println("They are already friends.");
 				out.print("already");

@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,7 +35,6 @@ public class GetUserInfo extends HttpServlet {
 		// TODO Auto-generated method stub
 		// 接收信息
 		String username=request.getParameter("username");
-		//username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 	    Service serv = new Service();
         AppUserInfo appUserInfo = new AppUserInfo();
 			    // 返回信息
@@ -42,12 +42,16 @@ public class GetUserInfo extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 				 
-				// 验证处理
-		boolean ok = serv.getUserInfo(username, appUserInfo);
+		// 验证处理
+		boolean ok = false;
+		try {
+			ok = serv.getUserInfo(username, appUserInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if (ok) {
 			System.out.print("Succss in getUserInfo:"+appUserInfo.getUserinfo());
 			out.print(appUserInfo.getUserinfo());
-					
 		} else {
 			System.out.print("Failed to getUserInfo");
 			out.print("failed");

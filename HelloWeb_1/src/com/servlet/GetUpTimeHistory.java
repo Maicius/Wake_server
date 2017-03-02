@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,7 +46,12 @@ public class GetUpTimeHistory extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		boolean ok = serv.getTimeHistory(username, appUserInfo);
+		boolean ok = false;
+		try {
+			ok = serv.getTimeHistory(username, appUserInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if (ok) {
 			result=appUserInfo.getTimeList();
 			System.out.print("Succss in getTimeHistory");

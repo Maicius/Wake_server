@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,7 +45,12 @@ public class GetFriendsList extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		boolean ok = service.getFriendsList(username, appUserInfo);
+		boolean ok = false;
+		try {
+			ok = service.getFriendsList(username, appUserInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if (ok) {
 			System.out.println("Success in Getting Friends List");
 			info = appUserInfo.getFriendsList();

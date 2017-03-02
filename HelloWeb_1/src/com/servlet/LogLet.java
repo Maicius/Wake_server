@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,17 +28,18 @@ public class LogLet extends HttpServlet {
 		System.out.println("username="+username);
 		username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 		String password = request.getParameter("password");
-		//System.out.println(username + "--" + password);
-		// 新建服务对象
 		Service serv = new Service();
         AppUserInfo appUserInfo = new AppUserInfo();
 		 // 返回信息
 		 response.setCharacterEncoding("UTF-8");
 		 response.setContentType("text/html");
 		 PrintWriter out = response.getWriter();
-		 
-		// 验证处理
-		boolean loged = serv.login(username, password, appUserInfo);
+		boolean loged =false;
+		try {
+			loged = serv.login(username, password, appUserInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if (loged) {
 			 System.out.print("Succss in Login");
 			 out.print(appUserInfo.getUserInfo());	

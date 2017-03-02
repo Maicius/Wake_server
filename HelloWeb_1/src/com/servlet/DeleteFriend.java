@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,14 +34,20 @@ public class DeleteFriend extends HttpServlet {
 		// TODO Auto-generated method stub
 		String userName = request.getParameter("userName");
 		String friendName = request.getParameter("friendName");
-		//³õÊ¼»¯´¦ÀíÀà
+		//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	    Service service = new Service();
 	    
 	    response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		boolean ok = service.deleteFriend(userName, friendName);
+		boolean ok;
+		try {
+			ok = service.deleteFriend(userName, friendName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (ok)
 		{
 			System.out.println("Success in Delete Friend.");

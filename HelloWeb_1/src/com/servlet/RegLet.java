@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 public class RegLet extends HttpServlet {
@@ -44,12 +46,17 @@ public class RegLet extends HttpServlet {
 		System.out.println("昵称"+nickname);
 		System.out.println("UTF-8昵称"+nickname);
 		// 返回信息
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("text/html");
-				PrintWriter out = response.getWriter();
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
 		
 		// 验证处理
-		boolean reged = serv.register(username,password,nickname, brief_intro);
+		boolean reged = false;
+		try {
+			reged = serv.registerUser(username,password,nickname, brief_intro);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if (reged) {
 			System.out.print("Succss in Register");
 			request.getSession().setAttribute("username", username);
