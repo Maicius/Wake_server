@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +31,13 @@ public class SleepTime extends HttpServlet{
 	    Service serv = new Service();
 
 		// 验证处理
-		boolean ok = serv.registerSleepTime(username, hour, date);
+		boolean ok = false;
+		try {
+			ok = serv.registSleepTime(username, hour, date);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (ok) {
 			//System.out.print("Succss in update SleepTime");
 		} else {

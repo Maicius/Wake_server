@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,7 +51,13 @@ public class SearchFriend extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		AppUserInfo appUserInfo = new AppUserInfo();
-		boolean ok = service.searchFriend(nickName, userName, appUserInfo);
+		boolean ok = false;
+		try {
+			ok = service.searchFriend(nickName, userName, appUserInfo);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (ok) {
 			System.out.println("Success in Getting Friends List");
 			info = appUserInfo.getFriendsList();

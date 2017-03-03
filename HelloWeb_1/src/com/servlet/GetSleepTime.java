@@ -2,6 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,7 +45,13 @@ public class GetSleepTime extends HttpServlet{
 		 PrintWriter out = response.getWriter();
 		 
 		// 验证处理
-		boolean ok = serv.getSleepTime(username, appUserInfo);
+		boolean ok =  false;
+		try {
+			ok = serv.getSleepTime(username, appUserInfo);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (ok) {
 			result=appUserInfo.getSleepList();
 			System.out.print("Succss in getSleepTimeHistory");

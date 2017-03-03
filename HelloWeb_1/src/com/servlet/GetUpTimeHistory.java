@@ -49,7 +49,7 @@ public class GetUpTimeHistory extends HttpServlet {
 		boolean ok = false;
 		try {
 			ok = serv.getTimeHistory(username, appUserInfo);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (ok) {

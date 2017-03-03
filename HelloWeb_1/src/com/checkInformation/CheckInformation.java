@@ -17,7 +17,9 @@ public class CheckInformation {
 		try {
 			Connection conn = ClockDBHelper.createInstance();
 			ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
-			ResultSet rs = clockDataDBManager.executeNameQuery("*","appuser", username);
+			String column = "*";
+			String table = "appuser";
+			ResultSet rs = clockDataDBManager.executeNameQuery(column, table, username);
 			if (rs.next()) {
 				return true;
 			} else {
@@ -62,7 +64,9 @@ public class CheckInformation {
 		try {
 			Connection conn  = ClockDBHelper.createInstance();
 			ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
-			ResultSet rs = clockDataDBManager.executeNameQuery("*", "appuser",username);
+			String column = "*";
+			String table = "appuser";
+			ResultSet rs = clockDataDBManager.executeNameQuery(column, table,username);
 			if (rs.next()) {
 				return true;
 			}else{

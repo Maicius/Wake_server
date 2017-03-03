@@ -67,7 +67,13 @@ public class AddFriend extends HttpServlet {
 				System.out.println("They are already friends.");
 				out.print("already");
 			} else {               //�����Ǻ���
-				boolean ok = service.addFriend(userName, friendName);
+				boolean ok = false;
+				try {
+					ok = service.addFriend(userName, friendName);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if (ok)        //�ж��Ƿ���ӳɹ�
 				{
 					System.out.println("Success in Add Friend.");

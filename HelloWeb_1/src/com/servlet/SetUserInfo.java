@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,7 +56,13 @@ public class SetUserInfo extends HttpServlet {
 		 PrintWriter out = response.getWriter();
 		 
 		// 验证处理
-		boolean ok = serv.setUserInfo(username,nickname,brief_intro);
+		boolean ok = false;
+		try {
+			ok = serv.setUserInfo(username,nickname,brief_intro);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (ok) {
 			System.out.print("Succss in setUserInfo");
 			request.getSession().setAttribute("username", username);

@@ -58,7 +58,11 @@ public class Service {
 		try {
 			Connection conn = ClockDBHelper.createInstance();
 			ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
-			ResultSet rs = clockDataDBManager.executeNameQuery("up_time","getuptime", "username");
+			String column = "up_time";
+			String table = "getuptime";
+			System.out.println(username);
+			ResultSet rs = clockDataDBManager.executeNameQuery(column, table, username);
+			
 			while (rs.next()) {
 				String tmp=rs.getString("up_time").substring(0, 19)+"#" ;
 				timeList+=tmp;
@@ -78,8 +82,9 @@ public class Service {
 		Connection conn = ClockDBHelper.createInstance();
 		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
 		try {
-
-			ResultSet rs = clockDataDBManager.executeNameQuery("*", "appuser", username);
+            String column = "*";
+            String table = "appuser";
+			ResultSet rs = clockDataDBManager.executeNameQuery(column, table, username);
 			if (rs.next()) {
 				String user_name = rs.getString("username");
 				String nickname = rs.getString("nickname");
@@ -139,11 +144,14 @@ public class Service {
 		if (nickName.equals("") && userName.equals(""))// ͬʱΪ��
 			return false;
 		else if (userName.equals("")) { // �ǳ�Ϊ�գ����ǵ绰��Ϊ��
-			rs = clockDataDBManager.executeSearchFriends("username", userName);
+			String column = "username";
+			rs = clockDataDBManager.executeSearchFriends(column, userName);
 		} else if (nickName.equals("")) { // ֻ���ǳ�
-			rs = clockDataDBManager.executeSearchFriends("nickname", nickName);
+			String column = "nickname";
+			rs = clockDataDBManager.executeSearchFriends(column, nickName);
 		} else { // �ǳơ��û�������
-			rs = clockDataDBManager.executeSearchFriends("username", userName);
+			String column = "username";
+			rs = clockDataDBManager.executeSearchFriends(column, userName);
 		}
 		try {
 			while (rs.next()) {
@@ -210,51 +218,44 @@ public class Service {
 			return false;
 	}
 
-	public boolean registSleepTime(String username, String hour, String date) {
+	public boolean registSleepTime(String userName, String hour, String date) throws SQLException {
 		// TODO Auto-generated method stub
-		String regTimeSql = "insert into sleepTime (username, sleep, day) values('"
-				+ username + "','" + hour + "','"+date+"') ";
+
 		Connection conn = ClockDBHelper.createInstance();
 		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
-		int ret = clockDataDBManager.executeRegistSleepTime();
-		if (ret != 0) {
-			sql.closeDB();
+		int ret = clockDataDBManager.executeRegistSleepTime(userName, hour, date);
+		ClockDBHelper.closeDB();
+		if (ret != 0) {		
 			return true;
 		}
-		sql.closeDB();
-
 		return false;
 	}
 
-	public boolean getSleepTime(String username, AppUserInfo appUserInfo) {      
-		String SqlQuery = "select sleep,day from sleepTime where username ='" + username+"'";
-		sql.connectDB();
-		String sleepList="";
+	public boolean getSleepTime(String userName, AppUserInfo appUserInfo) throws SQLException {
+		Connection conn = ClockDBHelper.createInstance();
+		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+		String sleepList = "";
 		// 操作DB对象
-		try {
-			ResultSet rs = sql.executeQuery(SqlQuery);
-			while (rs.next()) {
-				String tmp=rs.getString("day")+" "+rs.getString("sleep")+"#" ;
-				sleepList+=tmp;
-			}
-			appUserInfo.setSleepList(sleepList);
-			sql.closeDB();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		String column = "*";
+		String table = "sleepTime";
+		ResultSet rs = clockDataDBManager.executeNameQuery(column, table, userName);
+		while (rs.next()) {
+			String tmp = rs.getString("day") + " " + rs.getString("sleep") + "#";
+			sleepList += tmp;
 		}
-		sql.closeDB();
-		return false;
+		appUserInfo.setSleepList(sleepList);
+		return true;
 	}
 
-	public boolean getGetUpTip(String username, AppUserInfo appUserInfo) {
+	public boolean getGetUpTip(String userName, AppUserInfo appUserInfo) throws SQLException {
 		// TODO Auto-generated method stub
-		String SqlQuery = "select greeting_text, nickname from greeting,appuser where send_user = username and receive_user ='" + username+"'";
 		
-		sql.connectDB();
+		
+		Connection conn = ClockDBHelper.createInstance();
+		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
 		// 操作DB对象
 		try {
-			ResultSet rs = sql.executeQuery(SqlQuery);
+			ResultSet rs = clockDataDBManager.executeGetGetUpTip(userName);
 			if(rs.last()) {
 				String greeting=rs.getString("greeting_text");
 				String send_user = rs.getString("nickname");
@@ -262,12 +263,12 @@ public class Service {
 				appUserInfo.setGreetingInfo(greetingInfo);
 				System.out.println(greetingInfo);
 			}
-			sql.closeDB();
+	        ClockDBHelper.closeDB();
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		sql.closeDB();
+		ClockDBHelper.closeDB();
 		return false;
 	}
 }

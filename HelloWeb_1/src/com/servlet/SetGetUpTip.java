@@ -3,6 +3,7 @@ package com.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,7 +43,13 @@ public class SetGetUpTip extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		boolean ok = service.setGetUpTip(username, friendname, tip);
+		boolean ok = false;
+		try {
+			ok = service.setGetUpTip(username, friendname, tip);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (ok)
 		{
 			System.out.println("Success in Set Get-Up Tip.");
