@@ -4,9 +4,8 @@ import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
 
-public class ClockDataDBManager extends ClockDBManager{
+public class ClockDataDBManager extends ClockDBHelper{
     private ResultSet rs = null;
     
 	public ResultSet getRs() {
@@ -26,7 +25,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	public ResultSet executeLogQuery(String username, String password) throws SQLException{
 		String logSql = "select * from appuser where username = ? and password = ?";
 		
-        PreparedStatement preparedStatement = dbConnection.prepareStatement(logSql);
+        preparedStatement = dbConnection.prepareStatement(logSql);
         preparedStatement.setString(1,username);
         preparedStatement.setString(2,password);
         setRs(preparedStatement.executeQuery());
@@ -36,7 +35,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	//根据username和表名进行查询
 	public ResultSet executeNameQuery(String column, String table,String userName) throws SQLException{
 		String querySql = "select "+column+" from "+ table +" where username = ?";
-		PreparedStatement preparedStatement  = dbConnection.prepareStatement(querySql);
+		preparedStatement  = dbConnection.prepareStatement(querySql);
 	    preparedStatement.setString(1, userName);
 	    setRs(preparedStatement.executeQuery());
 		return getRs();
@@ -47,7 +46,7 @@ public class ClockDataDBManager extends ClockDBManager{
 		String query = "select username, nickname, brief_intro from appuser where username in "
 				+ "(select friends from friend_list"
 				+ " where user_id = ?)";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
+		preparedStatement = dbConnection.prepareStatement(query);
 		preparedStatement.setString(1, userName);
 		setRs(preparedStatement.executeQuery());
 		return getRs();
@@ -56,7 +55,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	//搜索好友0
     public ResultSet executeSearchFriends(String column, String name) throws SQLException{
 		String query = "select username, nickname from appuser where "+ column +"= ?";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
+		preparedStatement = dbConnection.prepareStatement(query);
 		preparedStatement.setString(1, column);
 		preparedStatement.setString(2, name);
 		setRs(preparedStatement.executeQuery());
@@ -66,7 +65,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	//检查是否为好友关系
 	public ResultSet executeWhetherFriendsQuery(String userName, String friendName) throws SQLException{
 		String sql = "select * from friend_list where user_id= ? and friends= ?";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(sql);
+		preparedStatement = dbConnection.prepareStatement(sql);
 		preparedStatement.setString(1, userName);
 		preparedStatement.setString(2, friendName);
 		setRs(preparedStatement.executeQuery());
@@ -76,7 +75,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	//添加好友
 	public int executeAddFriend(String userName, String friendName) throws SQLException{
 		String sql = "insert into friend_list(user_id, friends) values(?,?);";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(sql);
+		preparedStatement = dbConnection.prepareStatement(sql);
 		preparedStatement.setString(1,userName);
 		preparedStatement.setString(2, friendName);
 		int ans = preparedStatement.executeUpdate();
@@ -88,7 +87,7 @@ public class ClockDataDBManager extends ClockDBManager{
 		String regSql = "insert into appuser "
 				+ "(username,password,nickname,brief_intro) "
 				+ "values(?, ?, ?, ?) ";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(regSql);
+		preparedStatement = dbConnection.prepareStatement(regSql);
 		preparedStatement.setString(1, userName);
 		preparedStatement.setString(2, password);
 		preparedStatement.setString(3, nickname);
@@ -100,7 +99,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	//注册起床时间
 	public int executeRegistGetUpTime(String userName, Timestamp date) throws SQLException{
 		String regTimeSql = "insert into getuptime (username, up_time) values(?, ?)";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(regTimeSql);
+		preparedStatement = dbConnection.prepareStatement(regTimeSql);
 		preparedStatement.setString(1, userName);
 		preparedStatement.setString(2, String.valueOf(date));
 		int rs = preparedStatement.executeUpdate();
@@ -111,7 +110,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	public int executeSetGetUpTip(String userName, String friendName, String tip) throws SQLException{
 		String sql = "insert into greeting(send_user, receive_user, greeting_text)"
 				+ " values(?, ?,?)";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(sql);
+		preparedStatement = dbConnection.prepareStatement(sql);
 		preparedStatement.setString(1, userName);
 		preparedStatement.setString(2, friendName);
 		preparedStatement.setString(3, tip);
@@ -122,7 +121,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	//删除好友
 	public int executeDeleteFriend(String userName, String friendName) throws SQLException{
 		String delSql = "delete from friend_list where user_id= ? and friends= ?";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(delSql);
+		preparedStatement = dbConnection.prepareStatement(delSql);
 		preparedStatement.setString(1, userName);
 		preparedStatement.setString(2, friendName);
 		int rs = preparedStatement.executeUpdate();
@@ -133,7 +132,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	public int executeSetUserInfo(String userName, String nickName, String brief_intro) throws SQLException{
 		String SqlInfo = "update appuser set nickname = ?,brief_intro= ?"
 				+ "where username =?";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(SqlInfo);
+		preparedStatement = dbConnection.prepareStatement(SqlInfo);
 		preparedStatement.setString(1, nickName);
 		preparedStatement.setString(2, brief_intro);
 		preparedStatement.setString(3, userName);
@@ -143,7 +142,7 @@ public class ClockDataDBManager extends ClockDBManager{
 	
 	public int executeRegistSleepTime(String userName, String hour,String date) throws SQLException{
 		String regTimeSql = "insert into sleepTime (username, sleep, day) values(?, ?, ?) ";
-		PreparedStatement preparedStatement = dbConnection.prepareStatement(regTimeSql);
+		preparedStatement = dbConnection.prepareStatement(regTimeSql);
 		preparedStatement.setString(1,  userName);	preparedStatement.setString(2, hour);
 		preparedStatement.setString(3, date);
 		int ret = preparedStatement.executeUpdate();
@@ -153,7 +152,7 @@ public class ClockDataDBManager extends ClockDBManager{
     public ResultSet executeGetGetUpTip(String userName) throws SQLException{
     	String sql = "select greeting_text, nickname from greeting,appuser "
     			+ "where send_user = username and receive_user = ?";
-    	PreparedStatement preparedStatement = dbConnection.prepareStatement(sql);
+    	preparedStatement = dbConnection.prepareStatement(sql);
     	preparedStatement.setString(1, userName);
     	setRs(preparedStatement.executeQuery());
     	return getRs();

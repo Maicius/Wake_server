@@ -1,25 +1,29 @@
 package com.DAO;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class ClockDBHelper {
-	// 数据库连接常量
+public  class ClockDBHelper {
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	public static final String USER = "root";
 	public static final String PASS = "110110";
 	public static final String URL = "jdbc:mysql://localhost/clock?useUnicode=true&characterEncoding=UTF-8";
 
 	//public static final String URL = "jdbc:mysql://116.62.41.211:3306/clock";
-	protected static Connection ClockConn = null;
-	protected static PreparedStatement preparedStatemen = null;
-    public ClockDBHelper() {
+	//protected static Connection ClockConn = null;
+	protected static PreparedStatement preparedStatement = null;
+	protected static Connection dbConnection = null;
+    public ClockDBHelper(Connection dbConnection) {
+        ClockDBHelper.dbConnection = dbConnection;
     }
     
 	public static Connection createInstance() throws SQLException {
         initDB();
-		ClockConn = DriverManager.getConnection(URL, USER, PASS);
+        dbConnection = DriverManager.getConnection(URL, USER, PASS);
 		System.out.println("SqlManager:Connect to database successful.");
-        return ClockConn;
+        return dbConnection;
 	}
 
 	// 加载驱动
@@ -36,11 +40,12 @@ public class ClockDBHelper {
 	public static void closeDB() {
 		System.out.println("Close connection to database..");
 		try {
-			ClockConn.close();
+			preparedStatement.close();
+			dbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		System.out.println("Close connection successful");
 	}
-    
+
 }

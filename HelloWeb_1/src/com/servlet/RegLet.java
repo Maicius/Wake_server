@@ -10,8 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.UserDao.AppUserInfo;
 import com.service.Service;
 
 public class RegLet extends HttpServlet {

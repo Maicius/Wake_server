@@ -9,7 +9,7 @@ import com.UserDao.AppUserInfo;
 import com.checkInformation.CheckInformation;
 
 public class Service {
-	//ClockDataDBManager sql = new ClockDataDBManager();
+
 	public Boolean login(String username, String password, AppUserInfo appUserInfo) throws SQLException {
 		String nickname = "";
 		Connection conn = ClockDBHelper.createInstance();
@@ -77,13 +77,13 @@ public class Service {
 		return false;
 	}
 	
-	public Boolean getUserInfo(String username, AppUserInfo appUserInfo) throws SQLException {
-
-		Connection conn = ClockDBHelper.createInstance();
-		ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+	public Boolean getUserInfo(String username, AppUserInfo appUserInfo) {
 		try {
-            String column = "*";
-            String table = "appuser";
+			Connection conn = ClockDBHelper.createInstance();
+			ClockDataDBManager clockDataDBManager = new ClockDataDBManager(conn);
+
+			String column = "*";
+			String table = "appuser";
 			ResultSet rs = clockDataDBManager.executeNameQuery(column, table, username);
 			if (rs.next()) {
 				String user_name = rs.getString("username");
@@ -91,14 +91,14 @@ public class Service {
 				String brief_intro = rs.getString("brief_intro");
 				appUserInfo.setUserinfo(user_name + "#" + nickname + "#" + brief_intro);
 			}
-			ClockDBHelper.closeDB();
 			return true;
 		} catch (SQLException e) {
-			ClockDBHelper.closeDB();
 			e.printStackTrace();
+			return false;
+		} finally {
+			ClockDBHelper.closeDB();
 		}
-		ClockDBHelper.closeDB();
-		return false;
+
 	}
 
 	public Boolean getFriendsList(String username, AppUserInfo appUserInfo) throws SQLException {
@@ -168,7 +168,6 @@ public class Service {
 	}
 
 	public Boolean addFriend(String userName, String friendName) throws SQLException {
-		String query = "";
 		System.out.println(userName + " " + friendName);
 		if (userName.equals("") || friendName.equals("")) { // ������Ϊ�յ����
 			return false;

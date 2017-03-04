@@ -31,9 +31,9 @@ public class LogLet extends HttpServlet {
 		Service serv = new Service();
         AppUserInfo appUserInfo = new AppUserInfo();
 		 // 返回信息
-		 response.setCharacterEncoding("UTF-8");
-		 response.setContentType("text/html");
-		 PrintWriter out = response.getWriter();
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
 		boolean loged =false;
 		try {
 			loged = serv.login(username, password, appUserInfo);
