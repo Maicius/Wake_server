@@ -24,7 +24,7 @@ public class ClockDataDBManager extends ClockDBHelper{
 	//登陆查询
 	public ResultSet executeLogQuery(String username, String password) throws SQLException{
 		String logSql = "select * from appuser where username = ? and password = ?";
-		
+		System.out.println("logIn...");
         preparedStatement = dbConnection.prepareStatement(logSql);
         preparedStatement.setString(1,username);
         preparedStatement.setString(2,password);
@@ -140,6 +140,7 @@ public class ClockDataDBManager extends ClockDBHelper{
 		return ret;
 	}
 	
+	//注册起床时间
 	public int executeRegistSleepTime(String userName, String hour,String date) throws SQLException{
 		String regTimeSql = "insert into sleepTime (username, sleep, day) values(?, ?, ?) ";
 		preparedStatement = dbConnection.prepareStatement(regTimeSql);
@@ -148,7 +149,7 @@ public class ClockDataDBManager extends ClockDBHelper{
 		int ret = preparedStatement.executeUpdate();
 		return ret;
 	}
-	
+	//获得起床时间
     public ResultSet executeGetGetUpTip(String userName) throws SQLException{
     	String sql = "select greeting_text, nickname from greeting,appuser "
     			+ "where send_user = username and receive_user = ?";
@@ -156,10 +157,5 @@ public class ClockDataDBManager extends ClockDBHelper{
     	preparedStatement.setString(1, userName);
     	setRs(preparedStatement.executeQuery());
     	return getRs();
-    }
-    
-
-	
-	
-	
+    }	
 }

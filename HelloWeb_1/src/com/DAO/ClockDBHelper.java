@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 public  class ClockDBHelper {
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
-	public static final String USER = "root";
-	public static final String PASS = "110110";
-	public static final String URL = "jdbc:mysql://localhost/clock?useUnicode=true&characterEncoding=UTF-8";
+	public static final String USER = "";
+	public static final String PASS = "";
+	public static final String URL = "jdbc:mysql://116.62.41.211/clock?useUnicode=true&characterEncoding=UTF-8";
 
 	//public static final String URL = "jdbc:mysql://116.62.41.211:3306/clock";
 	//protected static Connection ClockConn = null;

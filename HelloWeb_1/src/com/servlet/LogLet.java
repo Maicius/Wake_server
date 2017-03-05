@@ -19,7 +19,6 @@ public class LogLet extends HttpServlet {
 	/**
 	 * The doGet method of the Server let.
 	 */
-
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
